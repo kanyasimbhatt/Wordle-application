@@ -1,0 +1,6 @@
+.questionaire-keyboard{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: calc(100vh - 70px);
+}

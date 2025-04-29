@@ -1,0 +1,21 @@
+.navbar-div{
+    display: flex;
+    background-color: black;
+    height: 70px;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+.wordle-logo {
+    padding: 1.5em;
+    will-change: filter;
+    height: 40px;
+    width: 40px;
+
+  }
+  .wordle-logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+  }
