@@ -1,18 +1,18 @@
-.wordle-grid{
-    display: grid;
-    grid-template-columns: repeat(5, 50px);
-    grid-template-rows: repeat(7, 50px);
-    gap: 15px;
-    justify-content: center;
-    margin-top: 10px;
-    height: calc(100vh - 70px - 10px - 25vh);
+.wordle-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  grid-template-rows: repeat(7, 60px);
+  gap: 15px;
+  justify-content: center;
+  margin-top: 10px;
+  height: calc(100vh - 70px - 10px - 30vh);
 }
 
-.wordle-grid > input{
-    border: 2px solid rgb(70, 69, 69);
-    background-color: transparent;
-    caret-color: transparent;
-    font-size: 36px;
-    display: flex;
-    text-align: center;
+.wordle-grid > input {
+  border: 2px solid rgb(70, 69, 69);
+  background-color: transparent;
+  caret-color: transparent;
+  font-size: 36px;
+  display: flex;
+  text-align: center;
 }
