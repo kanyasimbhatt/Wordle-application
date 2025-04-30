@@ -1,13 +1,48 @@
 import "./WordleQuestionaire.css";
-
+import { useContext } from "react";
+import { Wordcontext } from "../App";
 export default function WordleQuestionaire() {
+  let word1: Array<string> = useContext(Wordcontext);
+  let word: string;
+  
+  if(word1[0] !== undefined) word = word1[0].toLocaleUpperCase();
+  else word = '';
+//   let word: string;
+//     if(word1[0] !== undefined){
+//         word = word1[0].toLocaleUpperCase();
+//     }
+
+  
   let elementCount = 1;
+
+  function checkWordle(index: number){
+    index -= 4;
+    let greenCount = 0;
+    for(let i = index, j = 0; i < index+5 && j < 5; i++, j++){
+        let input = document.getElementById(`box-${i}`) as HTMLInputElement;
+        
+        if(word[j] === input.value){
+            input.style.backgroundColor = 'green';
+            greenCount++;
+        }
+        else if(word.includes(input.value)){
+            input.style.backgroundColor = 'yellow';
+        }
+    }
+
+    if(greenCount === 5){
+        alert('You Won! Play Again');
+    }
+
+    
+  }
   document.addEventListener("keydown", (e: Event) => {
     const inputElement = document.getElementById(
-      `box-${elementCount++}`
+      `box-${elementCount}`
     ) as HTMLInputElement;
     if ("key" in e) {
       if (e.key === "Backspace" || e.key === "Delete") {
+        console.log(elementCount)
         e.preventDefault();
         if (elementCount === 0) return;
         elementCount--;
@@ -20,8 +55,9 @@ export default function WordleQuestionaire() {
         inputElement.disabled = true;
       }
 
-      if ((elementCount - 1) % 5 === 0) {
-        checkWordle();
+      if ((elementCount - 1) % 5 === 0 && elementCount - 1 !== 0) {
+        console.log('sdfd')
+        checkWordle(elementCount - 1);
       }
     }
   });
