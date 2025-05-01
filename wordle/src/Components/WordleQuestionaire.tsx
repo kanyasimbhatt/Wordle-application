@@ -1,66 +1,84 @@
 import "./WordleQuestionaire.css";
 import { useContext } from "react";
 import { Wordcontext } from "../App";
+
 export default function WordleQuestionaire() {
-  let word1: Array<string> = useContext(Wordcontext);
-  let word: string;
-  
-  if(word1[0] !== undefined) word = word1[0].toLocaleUpperCase();
-  else word = '';
-//   let word: string;
-//     if(word1[0] !== undefined){
-//         word = word1[0].toLocaleUpperCase();
-//     }
-
-  
   let elementCount = 1;
+  let disableDelete = false;
 
-  function checkWordle(index: number){
-    index -= 4;
-    let greenCount = 0;
-    for(let i = index, j = 0; i < index+5 && j < 5; i++, j++){
-        let input = document.getElementById(`box-${i}`) as HTMLInputElement;
-        
-        if(word[j] === input.value){
-            input.style.backgroundColor = 'green';
-            greenCount++;
+  const word1: Array<string> = useContext(Wordcontext);
+  let word: string;
+
+  if (word1[0] !== undefined) word = word1[0].toLocaleUpperCase();
+  else word = "";
+  async function isValidWord() {
+    try {
+      const result = await fetch(
+        `https://api.api-ninjas.com/v1/dictionary?word=${word}`,
+        {
+          headers: {
+            "X-Api-Key": "9Oa+rnub8Qq5FaObX0M+UA==c0itFO6WHt8sgdbq",
+          },
         }
-        else if(word.includes(input.value)){
-            input.style.backgroundColor = 'yellow';
-        }
+      );
+      if (!result.ok) {
+        throw new Error("not a valid word");
+      }
+      const data = await result.json();
+      if (data.valid) {
+        checkWordle(elementCount - 5);
+      }
+      throw new Error("not a valid word");
+    } catch (err) {
+      alert(err);
     }
-
-    if(greenCount === 5){
-        alert('You Won! Play Again');
-    }
-
-    
   }
-  document.addEventListener("keydown", (e: Event) => {
-    const inputElement = document.getElementById(
-      `box-${elementCount}`
-    ) as HTMLInputElement;
-    if ("key" in e) {
-      if (e.key === "Backspace" || e.key === "Delete") {
-        console.log(elementCount)
-        e.preventDefault();
-        if (elementCount === 0) return;
-        elementCount--;
 
+  function checkWordle(elementCount: number) {
+    let greenCount = 0;
+    for (let i = elementCount, j = 0; i < elementCount + 5 && j < 5; i++, j++) {
+      const input = document.getElementById(`box-${i}`) as HTMLInputElement;
+      if (input.value === word[j]) {
+        input.style.backgroundColor = "green";
+        greenCount++;
+      } else if (word.includes(input.value)) {
+        input.style.backgroundColor = "yellow";
+      }
+    }
+    disableDelete = true;
+    if (greenCount === 5) {
+      alert("you Won");
+    }
+  }
+
+  document.addEventListener("keydown", (e: Event) => {
+    if ("key" in e) {
+      if ((!disableDelete && e.key === "Backspace") || e.key === "Delete") {
+        if (elementCount === 1) return;
+        const inputElement = document.getElementById(
+          `box-${elementCount - 1}`
+        ) as HTMLInputElement;
+        e.preventDefault();
+
+        elementCount--;
         inputElement.value = "";
         inputElement.disabled = false;
       } else if (isCharacter(e.key as string)) {
-        elementCount++;
+        if (elementCount === 31) return;
+        const inputElement = document.getElementById(
+          `box-${elementCount++}`
+        ) as HTMLInputElement;
+
         inputElement.value = `${e.key}`.toUpperCase();
         inputElement.disabled = true;
       }
 
-      if ((elementCount - 1) % 5 === 0 && elementCount - 1 !== 0) {
-        console.log('sdfd')
-        checkWordle(elementCount - 1);
+      if (e.key === "Enter" && (elementCount - 1) % 5 === 0) {
+        isValidWord();
       }
     }
   });
+
   function isCharacter(char: string) {
     if (char.length != 1) return false;
     if (
